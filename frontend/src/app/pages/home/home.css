@@ -1,0 +1,47 @@
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px max(5vw, 20px);
+  color: #fff;
+  background: #202020;
+}
+
+header span {
+  margin-left: 12px;
+  color: #ccc;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+nav {
+  display: flex;
+  gap: 20px;
+  padding: 12px max(5vw, 20px);
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+nav a {
+  color: #222;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+main {
+  max-width: 1200px;
+  padding: 0 20px;
+  margin: 24px auto;
+}
+
+@media (max-width: 600px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

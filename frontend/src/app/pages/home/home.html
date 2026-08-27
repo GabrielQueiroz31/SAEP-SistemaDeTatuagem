@@ -1,0 +1,20 @@
+<header>
+  <div>
+    <strong>Bloodline</strong>
+    <span>Estúdio de Tatuagem</span>
+  </div>
+
+  <div class="user">
+    Olá, {{ nomeUsuario }}
+    <button class="btn btn-secondary" (click)="logout()">Sair</button>
+  </div>
+</header>
+
+<nav>
+  <a routerLink="/home/agendamentos">Agendamentos</a>
+  <a routerLink="/home/clientes">Clientes</a>
+</nav>
+
+<main>
+  <router-outlet />
+</main>

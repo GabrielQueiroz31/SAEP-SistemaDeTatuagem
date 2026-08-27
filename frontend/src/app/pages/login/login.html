@@ -1,0 +1,26 @@
+<main class="login-page">
+  <form class="login-box" #form="ngForm" (ngSubmit)="entrar()">
+    <h1>Bloodline</h1>
+    <p>Estúdio de Tatuagem e Piercing</p>
+
+    @if (erro) {
+      <div class="alert">{{ erro }}</div>
+    }
+
+    <label class="field">
+      Usuário
+      <input name="usuario" [(ngModel)]="credencial.usuario" required>
+    </label>
+
+    <label class="field">
+      Senha
+      <input type="password" name="senha" [(ngModel)]="credencial.senha" required>
+    </label>
+
+    <button class="btn btn-primary" [disabled]="form.invalid">
+      Entrar
+    </button>
+
+    <small>Acesso de demonstração: admin / admin123</small>
+  </form>
+</main>

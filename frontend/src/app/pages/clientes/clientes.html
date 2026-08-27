@@ -1,0 +1,95 @@
+<section class="page">
+  <h1>Clientes</h1>
+
+  <div class="card">
+    <h2>{{ cliente.id ? 'Editar cliente' : 'Novo cliente' }}</h2>
+
+    @if (erro) {
+      <div class="alert">{{ erro }}</div>
+    }
+
+    <form class="form-grid" #form="ngForm" (ngSubmit)="salvar()">
+      <label class="field">
+        Nome*
+        <input name="nome" [(ngModel)]="cliente.nome" required #nome="ngModel">
+        @if (nome.invalid && nome.touched) {
+          <span class="error">Informe o nome.</span>
+        }
+      </label>
+
+      <label class="field">
+        CPF/Documento*
+        <input name="documento" [(ngModel)]="cliente.documento" required #documento="ngModel">
+        @if (documento.invalid && documento.touched) {
+          <span class="error">Informe o documento.</span>
+        }
+      </label>
+
+      <label class="field">
+        Telefone*
+        <input name="telefone" [(ngModel)]="cliente.telefone" required #telefone="ngModel">
+        @if (telefone.invalid && telefone.touched) {
+          <span class="error">Informe o telefone.</span>
+        }
+      </label>
+
+      <label class="field">
+        E-mail
+        <input type="email" name="email" [(ngModel)]="cliente.email">
+      </label>
+
+      <div class="actions">
+        <button class="btn btn-primary" [disabled]="form.invalid">Salvar</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelar()">
+          Limpar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="toolbar">
+    <h2>Clientes cadastrados</h2>
+
+    <div>
+      <input
+        placeholder="Buscar por nome ou documento"
+        [(ngModel)]="busca"
+        (keyup.enter)="listar()"
+      >
+      <button class="btn btn-secondary" (click)="listar()">Buscar</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Documento</th>
+          <th>Telefone</th>
+          <th>E-mail</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of clientes; track item.id) {
+          <tr>
+            <td>{{ item.nome }}</td>
+            <td>{{ item.documento }}</td>
+            <td>{{ item.telefone }}</td>
+            <td>{{ item.email || '-' }}</td>
+            <td class="actions">
+              <button class="btn btn-secondary" (click)="editar(item)">Editar</button>
+              <button class="btn btn-danger" (click)="excluir(item)">Excluir</button>
+            </td>
+          </tr>
+        }
+        @empty {
+          <tr>
+            <td colspan="5" class="empty">Nenhum cliente encontrado.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
