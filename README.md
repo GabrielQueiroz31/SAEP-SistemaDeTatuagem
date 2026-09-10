@@ -1,4 +1,4 @@
-# SAPE - Estúdio de tatuagem e Piercing
+# SAEP - Estúdio de tatuagem e Piercing
 
 Projeto com objetivo de fazer um site de gerenciamento de sessões de desenho, aplicação de tatuagem ou body piercing
 
