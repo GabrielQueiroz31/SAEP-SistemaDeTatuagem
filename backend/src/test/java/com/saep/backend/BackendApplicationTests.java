@@ -106,6 +106,40 @@ class BackendApplicationTests {
         assertEquals(HttpStatus.CONFLICT, erro.getStatusCode());
     }
 
+    @Test
+    @org.springframework.transaction.annotation.Transactional
+    void permiteEditarSemConflitarComProprioRegistro() {
+        var cliente = salvarCliente("Edicao", "teste-edicao");
+        var maca = macaRepository.findAllByOrderByNomeAsc().getFirst();
+        var tatuador = tatuadorRepository.findByAtivoTrueOrderByNome().getFirst();
+        var dados = novoAgendamento(cliente, maca, tatuador);
+        dados.setData(LocalDate.of(2027, 1, 10));
+        var salvo = agendamentoController.criar(dados);
+        dados.setObservacao("Alterado");
+        assertEquals("Alterado", agendamentoController.atualizar(salvo.getId(), dados).getObservacao());
+    }
+
+    @Test
+    @org.springframework.transaction.annotation.Transactional
+    void permiteRecursosDiferentesEImpedeConflitoNaEdicao() {
+        var cliente = salvarCliente("Recursos", "teste-recursos");
+        var macas = macaRepository.findAllByOrderByNomeAsc();
+        var tatuadores = tatuadorRepository.findByAtivoTrueOrderByNome();
+        var primeiro = novoAgendamento(cliente, macas.get(0), tatuadores.get(0));
+        primeiro.setData(LocalDate.of(2027, 1, 11));
+        agendamentoController.criar(primeiro);
+        var segundo = novoAgendamento(cliente, macas.get(1), tatuadores.get(1));
+        segundo.setData(primeiro.getData());
+        var salvo = agendamentoController.criar(segundo);
+        assertNotNull(salvo.getId());
+        segundo.setMaca(macas.get(0));
+        assertEquals(HttpStatus.CONFLICT, assertThrows(ResponseStatusException.class,
+            () -> agendamentoController.atualizar(salvo.getId(), segundo)).getStatusCode());
+        segundo.setMaca(macas.get(1));
+        segundo.setTatuador(tatuadores.get(0));
+        assertEquals(HttpStatus.CONFLICT, assertThrows(ResponseStatusException.class,
+            () -> agendamentoController.atualizar(salvo.getId(), segundo)).getStatusCode());
+    }
     private Cliente salvarCliente(String nome, String documento) {
         Cliente cliente = new Cliente();
         cliente.setNome(nome);

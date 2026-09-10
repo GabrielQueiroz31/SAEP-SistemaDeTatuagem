@@ -38,8 +38,9 @@ public class Agendamento {
     @JoinColumn(name = "tatuador_id")
     private Tatuador tatuador;
 
-    @ManyToOne
-    @JoinColumn(name = "maca_id")
+    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "maca_id", nullable = false)
     private Maca maca;
 
     @NotNull
