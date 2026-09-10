@@ -1,26 +1,42 @@
-<main class="login-page">
-  <form class="login-box" #form="ngForm" (ngSubmit)="entrar()">
-    <h1>Bloodline</h1>
-    <p>Estúdio de Tatuagem e Piercing</p>
-
-    @if (erro) {
-      <div class="alert">{{ erro }}</div>
-    }
-
-    <label class="field">
-      Usuário
-      <input name="usuario" [(ngModel)]="credencial.usuario" required>
-    </label>
-
-    <label class="field">
-      Senha
-      <input type="password" name="senha" [(ngModel)]="credencial.senha" required>
-    </label>
-
-    <button class="btn btn-primary" [disabled]="form.invalid">
-      Entrar
-    </button>
-
-    <small>Acesso de demonstração: admin / admin123</small>
-  </form>
+﻿<main class="login-page">
+  <section class="studio-panel" aria-label="Bloodline Tattoo e Piercing">
+    <a class="wordmark" href="/">BLOODLINE<span>TATTOO & PIERCING</span></a>
+    <div class="studio-title">
+      <span class="eyebrow">ESTÚDIO DE TATUAGEM</span>
+      <h1>Arte na pele.<br />Ordem na rotina.</h1>
+      <p>Seu estúdio, seus clientes e sua agenda.<br />Tudo no mesmo lugar.</p>
+    </div>
+    <span class="studio-footer">BLOODLINE — GESTÃO DO ESTÚDIO</span>
+  </section>
+  <section class="login-content">
+    <form class="login-box" #form="ngForm" (ngSubmit)="entrar()">
+      <span class="eyebrow">ÁREA ADMINISTRATIVA</span>
+      <h2>Bem-vindo de volta.</h2>
+      <p>Entre com seus dados para acessar o estúdio.</p>
+      @if (erro) {
+        <div class="alert" role="alert">{{ erro }}</div>
+      }
+      <label class="field"
+        >Usuário<input
+          name="usuario"
+          autocomplete="username"
+          placeholder="Seu usuário"
+          [(ngModel)]="credencial.usuario"
+          required
+      /></label>
+      <label class="field"
+        >Senha<input
+          type="password"
+          name="senha"
+          autocomplete="current-password"
+          placeholder="Sua senha"
+          [(ngModel)]="credencial.senha"
+          required
+      /></label>
+      <button class="btn btn-primary" [disabled]="form.invalid">
+        Entrar no painel <span aria-hidden="true">→</span>
+      </button>
+      <small>Acesso de demonstração: <strong>admin / admin123</strong></small>
+    </form>
+  </section>
 </main>

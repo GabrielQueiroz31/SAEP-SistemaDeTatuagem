@@ -10,7 +10,6 @@ import { Api, Cliente } from '../../service/api';
   styleUrl: './clientes.css'
 })
 export class Clientes implements OnInit {
-
   clientes: Cliente[] = [];
   busca = '';
   erro = '';
@@ -19,8 +18,7 @@ export class Clientes implements OnInit {
   constructor(
     private api: Api,
     private changeDetectorRef: ChangeDetectorRef
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.listar();
@@ -43,12 +41,14 @@ export class Clientes implements OnInit {
       },
       error: () => {
         this.erro = 'Não foi possível carregar os clientes.';
+        this.changeDetectorRef.markForCheck();
       }
     });
   }
 
   salvar() {
     this.erro = '';
+    this.changeDetectorRef.markForCheck();
 
     this.api.salvarCliente(this.cliente).subscribe({
       next: () => {
@@ -57,8 +57,8 @@ export class Clientes implements OnInit {
         this.listar();
       },
       error: (erro) => {
-        this.erro = erro.error?.message
-          || 'Não foi possível salvar o cliente.';
+        this.erro = erro.error?.message || 'Não foi possível salvar o cliente.';
+        this.changeDetectorRef.markForCheck();
       }
     });
   }
@@ -79,8 +79,8 @@ export class Clientes implements OnInit {
     this.api.excluirCliente(cliente.id).subscribe({
       next: () => this.listar(),
       error: (erro) => {
-        this.erro = erro.error?.message
-          || 'Não foi possível excluir o cliente.';
+        this.erro = erro.error?.message || 'Não foi possível excluir o cliente.';
+        this.changeDetectorRef.markForCheck();
       }
     });
   }

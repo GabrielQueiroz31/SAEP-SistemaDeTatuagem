@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './service/auth';
 
 import { Agendamentos } from './pages/agendamentos/agendamentos';
 import { Clientes } from './pages/clientes/clientes';
@@ -12,6 +13,8 @@ export const routes: Routes = [
   },
   {
     path: 'home',
+    canActivate: [authGuard],
+    canActivateChild: [authGuard],
     component: Home,
     children: [
       {

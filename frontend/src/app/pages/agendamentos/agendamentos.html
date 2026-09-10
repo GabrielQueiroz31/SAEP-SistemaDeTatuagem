@@ -1,29 +1,45 @@
 <section class="page">
-  <h1>Agendamentos</h1>
+  <div class="page-heading">
+    <span class="eyebrow">ESTÚDIO / AGENDA</span>
+    <h1>Agendamentos</h1>
+    <p>Organize as sessões e acompanhe os horários do estúdio.</p>
+  </div>
 
-  <div class="card">
-    <h2>{{ formulario.id ? 'Editar agendamento' : 'Novo agendamento' }}</h2>
+  <details class="card" open #cadastro>
+    <summary>
+      <h2>{{ formulario.id ? 'Editar agendamento' : 'Novo agendamento' }}</h2>
+    </summary>
 
     @if (erro) {
-      <div class="alert">{{ erro }}</div>
+      <div class="alert" role="alert">
+        <strong>Não foi possível salvar</strong><span>{{ erro }}</span>
+      </div>
     }
 
-    <form class="form-grid" #form="ngForm" (ngSubmit)="salvar()">
+    @if (sucesso) {
+      <div class="success" role="status">{{ sucesso }}</div>
+    }
+    <p class="form-help">
+      Os campos com * são obrigatórios. Um tatuador ou uma maca não podem ter duas reservas no mesmo
+      horário.
+    </p>
+    <form class="form-grid" #form="ngForm" (ngSubmit)="salvar(form)" novalidate>
       <label class="field">
         Cliente*
-        <select name="cliente" [(ngModel)]="formulario.clienteId" required>
+        <select name="cliente" [(ngModel)]="formulario.clienteId" required #cliente="ngModel">
           <option [ngValue]="null">Selecione</option>
           @for (cliente of clientes; track cliente.id) {
-            <option [ngValue]="cliente.id">
-              {{ cliente.nome }} — {{ cliente.documento }}
-            </option>
+            <option [ngValue]="cliente.id">{{ cliente.nome }} — {{ cliente.documento }}</option>
           }
         </select>
+        @if (cliente.invalid && cliente.touched) {
+          <span class="error">Preencha este campo.</span>
+        }
       </label>
 
       <label class="field">
         Tatuador*
-        <select name="tatuador" [(ngModel)]="formulario.tatuadorId" required>
+        <select name="tatuador" [(ngModel)]="formulario.tatuadorId" required #tatuador="ngModel">
           <option [ngValue]="null">Selecione</option>
           @for (tatuador of tatuadores; track tatuador.id) {
             <option [ngValue]="tatuador.id">
@@ -31,90 +47,117 @@
             </option>
           }
         </select>
+        @if (tatuador.invalid && tatuador.touched) {
+          <span class="error">Preencha este campo.</span>
+        }
       </label>
 
       <label class="field">
         Maca*
-        <select name="maca" [(ngModel)]="formulario.macaId" required>
+        <select name="maca" [(ngModel)]="formulario.macaId" required #maca="ngModel">
           <option [ngValue]="null">Selecione</option>
           @for (maca of macas; track maca.id) {
             <option [ngValue]="maca.id">{{ maca.nome }}</option>
           }
         </select>
+        @if (maca.invalid && maca.touched) {
+          <span class="error">Preencha este campo.</span>
+        }
       </label>
 
       <label class="field">
         Data*
-        <input type="date" name="data" [(ngModel)]="formulario.data" required>
+        <input type="date" name="data" [(ngModel)]="formulario.data" required #data="ngModel" />
+        @if (data.invalid && data.touched) {
+          <span class="error">Preencha este campo.</span>
+        }
       </label>
 
       <label class="field">
         Hora*
-        <input type="time" name="hora" [(ngModel)]="formulario.hora" required>
+        <input type="time" name="hora" [(ngModel)]="formulario.hora" required #hora="ngModel" />
+        @if (hora.invalid && hora.touched) {
+          <span class="error">Preencha este campo.</span>
+        }
       </label>
 
       <label class="field">
         Serviço*
-        <select name="servico" [(ngModel)]="formulario.servico" required>
+        <select name="servico" [(ngModel)]="formulario.servico" required #servico="ngModel">
           <option value="">Selecione</option>
           <option>Desenho</option>
           <option>Aplicação de tatuagem</option>
           <option>Body piercing</option>
         </select>
+        @if (servico.invalid && servico.touched) {
+          <span class="error">Preencha este campo.</span>
+        }
       </label>
 
-      <label class="field">
+      <label class="field field-wide">
         Observação
         <textarea name="observacao" [(ngModel)]="formulario.observacao" rows="2"></textarea>
       </label>
 
-      <div class="actions">
-        <button class="btn btn-primary" [disabled]="form.invalid">
-          Salvar agendamento
+      <div class="actions form-actions">
+        <button class="btn btn-primary" [disabled]="salvando">
+          {{ salvando ? 'Salvando...' : 'Salvar agendamento' }}
         </button>
-        <button type="button" class="btn btn-secondary" (click)="cancelar()">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancelar(); form.resetForm(formulario)"
+          [disabled]="salvando"
+        >
           Limpar
         </button>
       </div>
     </form>
-  </div>
+  </details>
 
-  <h2>Histórico de agendamentos</h2>
+  <section class="records" aria-label="Lista de agendamentos">
+    <div class="toolbar">
+      <h2>
+        Agenda do estúdio <span class="count">{{ agendamentos.length }}</span>
+      </h2>
+    </div>
 
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Data</th>
-          <th>Hora</th>
-          <th>Cliente</th>
-          <th>Tatuador</th>
-          <th>Maca</th>
-          <th>Serviço</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (item of agendamentos; track item.id) {
+    <div class="table-wrap">
+      <table>
+        <thead>
           <tr>
-            <td>{{ item.data | date:'dd/MM/yyyy' }}</td>
-            <td>{{ item.hora.substring(0, 5) }}</td>
-            <td>{{ item.cliente.nome }}</td>
-            <td>{{ item.tatuador.nome }}</td>
-            <td>{{ item.maca?.nome || '-' }}</td>
-            <td>{{ item.servico }}</td>
-            <td class="actions">
-              <button class="btn btn-secondary" (click)="editar(item)">Editar</button>
-              <button class="btn btn-danger" (click)="excluir(item)">Excluir</button>
-            </td>
+            <th>Data</th>
+            <th>Hora</th>
+            <th>Cliente</th>
+            <th>Tatuador</th>
+            <th>Maca</th>
+            <th>Serviço</th>
+            <th>Ações</th>
           </tr>
-        }
-        @empty {
-          <tr>
-            <td colspan="7" class="empty">Nenhum agendamento cadastrado.</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          @for (item of agendamentos; track item.id) {
+            <tr>
+              <td>{{ item.data | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ item.hora.substring(0, 5) }}</td>
+              <td>{{ item.cliente.nome }}</td>
+              <td>{{ item.tatuador.nome }}</td>
+              <td>{{ item.maca?.nome || '-' }}</td>
+              <td>{{ item.servico }}</td>
+              <td class="actions">
+                <button class="btn btn-secondary" (click)="cadastro.open = true; editar(item)">
+                  Editar
+                </button>
+                <button class="btn btn-danger" (click)="excluir(item)">Excluir</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="empty">Nenhum agendamento cadastrado.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
 </section>

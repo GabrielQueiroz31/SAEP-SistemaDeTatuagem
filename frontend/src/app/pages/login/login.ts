@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -11,7 +11,6 @@ import { Api } from '../../service/api';
   styleUrl: './login.css'
 })
 export class Login {
-
   credencial = {
     usuario: '',
     senha: ''
@@ -21,25 +20,23 @@ export class Login {
 
   constructor(
     private api: Api,
+    private changeDetectorRef: ChangeDetectorRef,
     private router: Router
-  ) {
-  }
+  ) {}
 
   entrar() {
     this.erro = '';
+    this.changeDetectorRef.markForCheck();
 
     this.api.login(this.credencial).subscribe({
       next: (usuario) => {
-        localStorage.setItem(
-          'usuarioLogado',
-          JSON.stringify(usuario)
-        );
+        localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
 
         this.router.navigate(['/home']);
       },
       error: (erro) => {
-        this.erro = erro.error?.message
-          || 'Usuário ou senha inválidos.';
+        this.erro = erro.error?.message || 'Usuário ou senha inválidos.';
+        this.changeDetectorRef.markForCheck();
       }
     });
   }

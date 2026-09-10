@@ -36,17 +36,12 @@ export interface Agendamento {
   providedIn: 'root'
 })
 export class Api {
+  private readonly baseUrl = 'http://localhost:8081/api';
 
-  private readonly baseUrl = 'http://localhost:8080/api';
-
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   login(dados: { usuario: string; senha: string }) {
-    return this.http.post<{ nome: string }>(
-      this.baseUrl + '/auth/login',
-      dados
-    );
+    return this.http.post<{ nome: string }>(this.baseUrl + '/auth/login', dados);
   }
 
   getClientes(busca = '') {
@@ -55,12 +50,13 @@ export class Api {
     });
   }
 
+  logout() {
+    return this.http.post<void>(this.baseUrl + '/auth/logout', {});
+  }
+
   salvarCliente(cliente: Cliente) {
     if (cliente.id) {
-      return this.http.put<Cliente>(
-        this.baseUrl + '/clientes/' + cliente.id,
-        cliente
-      );
+      return this.http.put<Cliente>(this.baseUrl + '/clientes/' + cliente.id, cliente);
     }
 
     return this.http.post<Cliente>(this.baseUrl + '/clientes', cliente);
@@ -90,10 +86,7 @@ export class Api {
       );
     }
 
-    return this.http.post<Agendamento>(
-      this.baseUrl + '/agendamentos',
-      agendamento
-    );
+    return this.http.post<Agendamento>(this.baseUrl + '/agendamentos', agendamento);
   }
 
   excluirAgendamento(id: number) {
